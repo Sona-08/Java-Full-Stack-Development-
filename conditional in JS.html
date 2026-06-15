@@ -1,0 +1,39 @@
+<html>
+<body>
+
+<button onclick="handleclick()">CLICK HERE</button>
+<p style="color:red;"id="res"></p>
+
+<script>
+
+function handleclick(){
+
+let n1=3;
+
+if(n1>=10 && n1<=50){
+console.log("It's between 10 and 50")
+document.getElementById("res").textContent="It's between 10 and 50";
+
+}
+else if(n1>50 && n1<=100){
+console.log("It's between 50 and 100")
+document.getElementById("res").textContent="It's between 50 and 100";
+}
+
+else if(n1>100){
+console.log("It's between 50 and 100")
+document.getElementById("res").textContent="It's above 100";
+}
+
+else{
+
+console.log("NOT IN LIST")
+document.getElementById("res").textContent="NOT IN LIST";
+}
+
+}
+
+</script>
+</body>
+
+</html>
