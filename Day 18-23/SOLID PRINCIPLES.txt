@@ -1,0 +1,127 @@
+
+SOLID PRINCIPLES
+
+SRP
+(Problem 1 – SRP
+"You are building a LibraryManager class that handles book inventory, user registration, and fine calculation. The code works but is hard to maintain. Refactor the design so each class has a single responsibility.")
+
+class bookInventory{
+    void addBook(){
+        System.out.println("Adding book to inventory");
+    }
+}
+class userRegistration{
+    void registerUser(){
+        System.out.println("Registering user");
+    }
+}
+class fineCalculation{
+    void calculateFine(){
+        System.out.println("Calculating fine");
+    }
+}
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+OCP:
+(Problem 2 – OCP
+"Your company introduces new types of discounts every festival season. The current FestivalDiscount class uses if-else chains to handle each case. Redesign the system so new discounts can be added without modifying existing code.")
+
+class Discount{
+    double calculate();
+}
+class Diwali extends Discount{
+    double calculate(double price){
+        return price*0.1;
+    }
+}
+
+class Christmas extends Discount{
+    double calculate(double price){
+        return price*0.2;
+    }
+}
+
+class DiscountCalculator{
+    double calculatediscount(Discount discount,double price){
+        return discount.calculate(price);
+    }
+}
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+LSP:
+Problem 3 – LSP
+	"You have a Shape base class with a calculateArea() method. A Line subclass throws an exception when calculateArea() is called. Redesign the hierarchy so all subclasses can be substituted without breaking functionality."
+
+class Area{
+    double calculateArea();
+}
+class noArea extends Area{
+    double calculateArea(){
+        return 0;
+    }
+}
+class Circle extends Area{
+    double calculateArea(double radius){
+        return 3.14*radius*radius;
+    }
+}
+class line extends noArea{
+    double calculateArea(){
+        return 0;
+    }
+}
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+ISP:
+Problem 4 – ISP
+	"You created a SmartDevice interface with methods playMusic(), makeCall(), and browseInternet(). A BasicPhone class implements it but throws exceptions for unsupported features. Split the interface so classes only implement what they actually support."
+
+interface Music{
+    void playmusic();
+}
+interface Call{
+    void makecall();
+}
+interface Internet{
+    void browseInternet();
+}
+
+class SmartPhone implements Music,Call,Internet{
+    public void playmusic(){
+        System.out.println("Playing music");
+    }
+    public void makecall(){
+        System.out.println("Making call");
+    }
+    public void browseInternet(){
+        System.out.println("Browsing internet");
+    }
+}
+
+class BasicPhone implements Call{
+    public void makecall(){
+        System.out.println("Making call");
+    }
+}
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+DIP:
+Problem 5 – DIP
+	"Your OrderService directly depends on a MySQLDatabase class. Later, the team wants to switch to PostgreSQL. Refactor the design so OrderService depends on an abstraction, making database swaps easy.
+
+interface DataBase{
+    void connect();
+}
+
+class MySQL implements DataBase{
+    public void connect(){
+        System.out.println("Connecting to MySQL database");
+    }
+}
+class PostgreSQL implements DataBase{
+    public void connect(){
+        System.out.println("Connecting to PostgreSQL database");
+    }
+}
+class DatabaseConnection{
+    void connectToDatabase(DataBase database){
+        database.connect();
+    }
+}
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------

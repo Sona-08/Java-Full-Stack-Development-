@@ -1,0 +1,369 @@
+ 25-06-2026
+					FACTORY METHOD
+Car car = CarFactory.createCar("SUV");-------------> centralized for creating objects
+
+Example: CarFactory Class
+// Car interface
+interface Car {
+    void drive();
+}
+
+// Concrete classes
+class SUV implements Car {
+    public void drive() { System.out.println("Driving an SUV"); }
+}
+
+class Sedan implements Car {
+    public void drive() { System.out.println("Driving a Sedan"); }
+}
+
+// Factory class
+class CarFactory {
+    public static Car createCar(String type) {
+        if(type.equalsIgnoreCase("SUV")) {
+            return new SUV();
+        } else if(type.equalsIgnoreCase("Sedan")) {
+            return new Sedan();
+        }
+        return null; // or throw exception
+    }
+}
+
+Using the Factory
+public class Showroom {
+    public static void main(String[] args) {
+        Car car1 = CarFactory.createCar("SUV");
+        car1.drive();   // Output: Driving an SUV
+
+        Car car2 = CarFactory.createCar("Sedan");
+        car2.drive();   // Output: Driving a Sedan
+    }
+}
+
+❓Which SOLID Principle is Followed?
+The design mainly demonstrates the Open/Closed Principle (OCP):
+
+Open for extension → You can add new car types (e.g., Truck, Coupe) by creating new classes that implement Car.
+
+Closed for modification → The client (Showroom) doesn’t need to change its code. It still calls CarFactory.createCar("Truck") and gets the right object.
+
+
+❓ Why Factory Method?
+Centralizes object creation.
+Client code is clean (no new SUV() scattered everywhere).
+Easy to extend (add new car types later).
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+							ABSTRACT FACTORY
+
+
+Bad code:
+// Directly creating objects → tightly coupled
+class VictorianChair {}
+class VictorianTable {}
+class ModernChair {}
+class ModernTable {}
+
+public class Main {
+    public static void main(String[] args) {
+        VictorianChair chair = new VictorianChair();
+        VictorianTable table = new VictorianTable();
+
+        // If we switch to Modern, we must change everywhere
+        ModernChair chair2 = new ModernChair();
+        ModernTable table2 = new ModernTable();
+    }
+}
+Problem: Code is tightly coupled to specific classes.
+Hard to switch product families
+
+
+CORRECT CODE
+// Abstract product interfaces
+interface Chair { void sit(); }
+interface Table { void use(); }
+
+// Concrete products
+class VictorianChair implements Chair {
+    public void sit() { System.out.println("Sitting on Victorian Chair"); }
+}
+class VictorianTable implements Table {
+    public void use() { System.out.println("Using Victorian Table"); }
+}
+
+class ModernChair implements Chair {
+    public void sit() { System.out.println("Sitting on Modern Chair"); }
+}
+class ModernTable implements Table {
+    public void use() { System.out.println("Using Modern Table"); }
+}
+
+// Abstract Factory
+interface FurnitureFactory {
+    Chair createChair();
+    Table createTable();
+}
+
+// Concrete Factories
+class VictorianFactory implements FurnitureFactory {
+    public Chair createChair() { return new VictorianChair(); }
+    public Table createTable() { return new VictorianTable(); }
+}
+
+class ModernFactory implements FurnitureFactory {
+    public Chair createChair() { return new ModernChair(); }
+    public Table createTable() { return new ModernTable(); }
+}
+
+// Client
+public class Main {
+    public static void main(String[] args) {
+        FurnitureFactory factory = new VictorianFactory();
+        Chair chair = factory.createChair();
+        Table table = factory.createTable();
+
+        chair.sit();   // Sitting on Victorian Chair
+        table.use();   // Using Victorian Table
+
+        factory = new ModernFactory();
+        Chair chair2 = factory.createChair();
+        Table table2 = factory.createTable();
+
+        chair2.sit();  // Sitting on Modern Chair
+        table2.use();  // Using Modern Table
+    }
+}
+
+class Main{
+    public static void main(String[] args){
+        GUIFactory factory = new WindowsFactory();
+        Button button = factory.createButton();
+        checkbox check = factory.createCheckbox();
+        button.click();
+        check.check();
+
+        factory = new MacFactory();
+        Button button1 = factory.createButton();    
+        checkbox checkbox1 = factory.createCheckbox();
+        button1.click();
+        checkbox1.check();
+    }
+}
+
+interface Button{
+    void click();
+}
+interface checkbox{
+    void check();
+}
+
+class WindowsButton implements Button{
+    public void click(){
+        System.out.println("Windows button clicked");
+    }
+}
+class MacButton implements Button{
+    public void click(){
+        System.out.println("Mac button clicked");
+    }
+}
+class WindowsCheckbox implements checkbox{
+    public void check(){
+        System.out.println("Windows checkbox checked");
+    }
+}
+
+class MacCheckbox implements checkbox{
+    public void check(){
+        System.out.println("Mac checkbox checked");
+    }
+}
+interface GUIFactory{
+    Button createButton();
+    checkbox createCheckbox();
+}
+
+class WindowsFactory implements GUIFactory{
+    public Button createButton(){
+        return new WindowsButton();
+    }
+    public checkbox createCheckbox(){
+        return new WindowsCheckbox();
+    }
+}
+
+class MacFactory implements GUIFactory{
+    public Button createButton(){
+        return new MacButton();
+    }
+    public checkbox createCheckbox(){
+        return new MacCheckbox();
+    }
+}
+
+
+
+Benefit: Easily switch between product families (Victorian ↔ Modern).
+Client code stays clean and flexible.
+
+🙄Why This is Abstract Factory Pattern?
+
+The client (Main) only depends on interfaces (FurnitureFactory, Chair, Table).
+It doesn’t know the details of VictorianChair or ModernChair.
+By switching factories, you switch the whole product family easily.
+This keeps the code flexible, clean, and loosely coupled.
+------------------------------------------------------------------------------------------------------------------------------------------------							SINGLETON
+
+
+
+class Scoreboard {
+    private   int score;
+    public void addPoints(int points) {
+        score += points;
+        System.out.println("Score updated: " + score);
+    }
+
+    public  int getScore() {
+        return score;
+    }
+}
+
+public class Main {
+    public static void main(String[] args) {
+        // Two players, two different scoreboards
+        Scoreboard player1Board = new Scoreboard();
+        Scoreboard player2Board = new Scoreboard();
+
+        player1Board.addPoints(10); // Score updated: 10
+        player2Board.addPoints(20); // Score updated: 20
+
+        // Confusing: two separate scores!
+        System.out.println("Player1 Scoreboard: " + player1Board.getScore()); // 10
+        System.out.println("Player2 Scoreboard: " + player2Board.getScore()); // 20
+    }
+}
+
+
+class Scoreboard {
+    private static Scoreboard instance;
+    private int score;
+
+    private Scoreboard() {
+        score = 0;
+        System.out.println("Scoreboard created!");
+    }
+
+    public static Scoreboard getInstance() {
+        if (instance == null) {
+            instance = new Scoreboard();
+        }
+        return instance;
+    }
+
+    public void addPoints(int points) {
+        score += points;
+        System.out.println("Score updated: " + score);
+    }
+
+    public int getScore() {
+        return score;
+    }
+}
+
+public class Main {
+    public static void main(String[] args) {
+        // Both players share the SAME scoreboard
+        Scoreboard player1Board = Scoreboard.getInstance();
+        Scoreboard player2Board = Scoreboard.getInstance();
+
+        player1Board.addPoints(10); // Score updated: 10
+        player2Board.addPoints(20); // Score updated: 30
+
+        // Consistent: one scoreboard for all
+        System.out.println("Final Score: " + player1Board.getScore()); // 30
+        System.out.println(player1Board == player2Board); // true → same object
+    }
+}
+
+
+
+
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+									BUILDER
+
+BAD:
+// Pizza with too many constructor parameters
+class Pizza {
+    private String dough;
+    private String sauce;
+    private String topping;
+
+    public Pizza(String dough, String sauce, String topping) {
+        this.dough = dough;
+        this.sauce = sauce;
+        this.topping = topping;
+    }
+}
+
+public class Main {
+    public static void main(String[] args) {
+        // Hard to read, error‑prone
+        Pizza pizza = new Pizza("Thin Crust", "Tomato", "Cheese");
+    }
+}
+
+
+
+// Pizza class with Builder
+class Pizza {
+    private String dough;
+    private String sauce;
+    private String topping;
+
+    private Pizza(PizzaBuilder builder) {
+        this.dough = builder.dough;
+        this.sauce = builder.sauce;
+        this.topping = builder.topping;
+    }
+
+    public static class PizzaBuilder {
+        private String dough;
+        private String sauce;
+        private String topping;
+
+        public PizzaBuilder setDough(String dough) {
+            this.dough = dough;
+            return this;
+        }
+
+        public PizzaBuilder setSauce(String sauce) {
+            this.sauce = sauce;
+            return this;
+        }
+
+        public PizzaBuilder setTopping(String topping) {
+            this.topping = topping;
+            return this;
+        }
+
+        public Pizza build() {
+            return new Pizza(this);
+        }
+    }
+
+    public void showPizza() {
+        System.out.println("Pizza with " + dough + ", " + sauce + ", " + topping);
+    }
+}
+
+public class Main {
+    public static void main(String[] args) {
+        Pizza pizza = new Pizza.PizzaBuilder()
+                            .setDough("Thin Crust")
+                            .setSauce("Tomato")
+                            .setTopping("Cheese")
+                            .build();
+
+        pizza.showPizza(); // Output: Pizza with Thin Crust, Tomato, Cheese
+    }
+}
