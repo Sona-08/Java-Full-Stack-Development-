@@ -1,0 +1,146 @@
+COMPOSITE PATTERN:
+import java.util.ArrayList;
+import java.util.List;
+
+interface FileSystemComponent {
+    void showDetails();
+    int getSize();
+}
+
+class File implements FileSystemComponent {
+
+    private String name;
+    private int size;
+
+    public File(String name, int size) {
+        this.name = name;
+        this.size = size;
+    }
+
+    @Override
+    public void showDetails() {
+        System.out.println("File : " + name + " (" + size + " KB)");
+    }
+
+    @Override
+    public int getSize() {
+        return size;
+    }
+}
+
+class Folder implements FileSystemComponent {
+
+    private String name;
+    private List<FileSystemComponent> components;
+
+    public Folder(String name) {
+        this.name = name;
+        components = new ArrayList<>();
+    }
+
+    public void add(FileSystemComponent component) {
+        components.add(component);
+    }
+
+    @Override
+    public void showDetails() {
+        System.out.println("Folder : " + name);
+
+        for (FileSystemComponent component : components) {
+            component.showDetails();
+        }
+    }
+
+    @Override
+    public int getSize() {
+        int total = 0;
+
+        for (FileSystemComponent component : components) {
+            total += component.getSize();
+        }
+
+        return total;
+    }
+}
+
+public class Main {
+
+    public static void main(String[] args) {
+
+        File file1 = new File("Resume.pdf", 100);
+        File file2 = new File("Photo.jpg", 200);
+        File file3 = new File("Project.docx", 300);
+
+        Folder college = new Folder("College");
+        college.add(file3);
+
+        Folder documents = new Folder("Documents");
+        documents.add(file1);
+        documents.add(file2);
+        documents.add(college);
+
+        FileSystemComponent[] items = {file1, documents};
+
+        for (FileSystemComponent item : items) {
+            item.showDetails();
+            System.out.println("Size = " + item.getSize() + " KB");
+            System.out.println();
+        }
+    }
+}
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+//PARKING LOT SYSTEM
+class Vehicle {
+    String licensePlate;
+    String type; // "CAR", "BIKE", "TRUCK"
+    Vehicle(String plate, String type) {
+        this.licensePlate = plate;
+        this.type = type;
+    }
+}
+
+class ParkingSpot {
+    int id;
+    String type; // "CAR", "BIKE", "TRUCK"
+    boolean isAvailable = true;
+    ParkingSpot(int id, String type) {
+        this.id = id;
+        this.type = type;
+    }
+}
+
+class Ticket {
+    int ticketId;
+    Vehicle vehicle;
+    ParkingSpot spot;
+    long entryTime;
+    Ticket(int id, Vehicle v, ParkingSpot s) {
+        this.ticketId = id;
+        this.vehicle = v;
+        this.spot = s;
+        this.entryTime = System.currentTimeMillis();
+    }
+}
+
+class Payment {
+    static double calculate(Ticket ticket) {
+        long duration = (System.currentTimeMillis() - ticket.entryTime) / 1000; // seconds
+        double rate = ticket.vehicle.type.equals("CAR") ? 20 :
+                      ticket.vehicle.type.equals("BIKE") ? 10 : 30;
+        return duration * rate;
+    }
+}
+
+public class ParkingLotDemo {
+    public static void main(String[] args) {
+        Vehicle car = new Vehicle("TN09AB1234", "CAR");
+        ParkingSpot spot = new ParkingSpot(1, "CAR");
+        Ticket ticket = new Ticket(101, car, spot);
+
+        double amount = Payment.calculate(ticket);
+
+        System.out.println("Vehicle: " + car.licensePlate);
+        System.out.println("Spot: " + spot.id);
+        System.out.println("Amount Due: ₹" + amount);
+    }
+}

@@ -1,0 +1,380 @@
+SQL :
+
+1.Easy Level – Cartoon Channel Table
+
+
+CREATE TABLE Cartoon_Channel (
+
+               Channel_ID
+INT PRIMARY KEY,          
+
+               Channel_Name
+VARCHAR(50),
+
+               Language
+VARCHAR(20),
+
+               Launch_Year
+INT
+
+);
+2. Medium Level – Cartoon Show Table
+
+
+
+CREATE TABLE Cartoon_Show (
+
+               Show_ID
+INT PRIMARY KEY,
+
+               Show_Name
+VARCHAR(50) NOT NULL,
+
+               Genre
+VARCHAR(30),
+
+               Rating
+DECIMAL(2,1) CHECK (Rating BETWEEN 1 AND 5),
+
+               Telecast_Time
+TIME,
+
+               Channel_Name
+VARCHAR(50) NOT NULL
+
+);
+3.Advanced Level
+Cartoon Channel Table
+
+
+
+CREATE TABLE Cartoon_Channel (
+
+    Channel_ID INT PRIMARY KEY,
+
+    Channel_Name VARCHAR(50) NOT NULL,
+
+    Language VARCHAR(20),+
+
+    Country VARCHAR(30)
+
+);
+Cartoon Show Table
+
+
+
+CREATE TABLE Cartoon_Show (
+
+    Show_ID INT PRIMARY KEY,
+
+    Show_Name VARCHAR(50) NOT NULL,
+
+    Rating DECIMAL(2,1) CHECK (Rating
+BETWEEN 1 AND 5),
+
+    Telecast_Time TIME,
+
+    Channel_ID INT,
+
+    FOREIGN KEY (Channel_ID)
+
+        REFERENCES Cartoon_Channel(Channel_ID)
+
+        ON DELETE CASCADE
+
+        ON UPDATE CASCADE
+
+);
+
+
+
+
+Insertion Of ValuesINSERT INTO Cartoon_Channel VALUES
+(1, 'Cartoon Network', 'English', 'USA'),
+(2, 'Pogo', 'English', 'India'),
+(3, 'Disney Channel', 'English', 'USA'),
+(4, 'Nickelodeon', 'English', 'USA'),
+(5, 'Hungama TV', 'Hindi', 'India');
+
+SELECT * FROM cartoon_channel;
+
+
+INSERT INTO Cartoon_Show VALUES
+(101, 'Ben 10', 4.8, '17:00:00', 1),
+(102, 'Powerpuff Girls', 4.5, '18:00:00', 1),
+(103, 'Chhota Bheem', 4.7, '16:30:00', 2),
+(104, 'Doraemon', 4.9, '19:00:00', 3),
+(105, 'Shinchan', 4.6, '20:00:00', 5),
+(106, 'Motu Patlu', 4.4, '15:30:00', 5),
+(107, 'SpongeBob SquarePants', 4.8, '17:30:00', 4),
+(108, 'Tom and Jerry', 5.0, '21:00:00', 1);
+SELECT * FROM cartoon_show;
+
+TRUNCATE TABLE cartoon_show;
+SELECT * FROM cartoon_show;
+//Error Query
+TRUNCATE TABLE cartoon_channel;
+SELECT * FROM cartoon_channel;
+
+
+
+DROP TABLE Cartoon_Channel;
+DROP TABLE Cartoon_Show;
+DROP TABLE Cartoon_Channel CASCADE;
+
+Queries
+1. Add a new column
+
+ALTER TABLE Cartoon_Show
+ADD COLUMN Launch_Year INT;
+
+2. Remove a column
+
+ALTER TABLE Cartoon_Show
+DROP COLUMN Launch_Year;
+
+3. Rename a column
+
+ALTER TABLE Cartoon_Show
+RENAME COLUMN Show_Name TO Cartoon_Name;
+
+4. Rename the table
+
+ALTER TABLE Cartoon_Show
+RENAME TO Cartoon_Programs;
+
+
+5. Modify a column
+
+ALTER TABLE Cartoon_Show
+ALTER COLUMN Show_Name TYPE VARCHAR(100);
+
+6. Add a UNIQUE constraint
+
+ALTER TABLE Cartoon_Show
+ADD CONSTRAINT uq_show_name
+UNIQUE (Show_Name);
+
+
+CREATE TABLE Bookings (
+    BookingID INT PRIMARY KEY,
+    FlightID INT,
+    PassengerID INT,
+    BookingDate DATE
+);
+
+INSERT
+INSERT INTO Bookings (BookingID, FlightID, PassengerID, BookingDate) VALUES
+(2001, 1001, 1201, '2024-07-15'),
+(2002, 1002, 1202, '2024-07-20'),
+(2003, 1003, 1203, '2024-08-01'),
+(2004, 1004, 1204, '2024-08-10'),
+(2005, 1005, 1205, '2024-08-20');
+
+
+CREATE TABLE Products (
+    ProductID INT PRIMARY KEY,
+    ProductName VARCHAR(100),
+    SupplierID INT,
+    Price DECIMAL(10,2)
+);
+
+Insert:
+INSERT INTO Products (ProductID, ProductName, SupplierID, Price)
+VALUES
+(1001, 'Premium Laptop', 1601, 1200.00),
+(1002, 'Basic Mouse', 1602, 35.00),
+(1003, 'Premium Headphones', 1601, 150.00),
+(1004, 'Office Chair', 1604, 220.00),
+(1005, 'Gaming Monitor', 1603, 300.00);
+
+
+update Products
+set price=price*1.1
+where price>50 and productname like 'Premium%';
+
+
+
+STEP 1: Create Tables
+---------------------
+
+CREATE TABLE Orders (
+    order_id INT PRIMARY KEY,
+    customer_name VARCHAR(30),
+    item VARCHAR(30),
+    amount DECIMAL(10,2),
+    status VARCHAR(20)
+);
+
+CREATE TABLE Coupons (
+    coupon_id INT PRIMARY KEY,
+    coupon_code VARCHAR(20),
+    status VARCHAR(20)
+);
+
+CREATE TABLE Delivery (
+    delivery_id INT PRIMARY KEY,
+    order_id INT,
+    partner_name VARCHAR(30),
+    status VARCHAR(20)
+);
+
+STEP 2: Insert Initial Data
+---------------------------
+
+INSERT INTO Coupons VALUES
+(1,'SAVE50','AVAILABLE'),
+(2,'WELCOME20','AVAILABLE'),
+(3,'FIRST100','AVAILABLE'),
+(4,'NEWUSER','AVAILABLE'),
+(5,'FREESHIP','AVAILABLE');
+
+COMMIT;
+
+==========================
+HARD LEVEL
+==========================
+11. Complete Order Processing
+-----------------------------
+
+BEGIN;
+
+INSERT INTO Orders
+VALUES
+(107,'Vijay','Pizza',500,'Placed');
+
+SAVEPOINT s1;
+
+UPDATE Coupons
+SET status='USED'
+WHERE coupon_id=3;
+
+INSERT INTO Delivery
+VALUES
+(2,107,'Suresh','Assigned');
+
+COMMIT;
+
+SELECT * FROM Orders;
+
+SELECT * FROM Coupons;
+
+SELECT * FROM Delivery;
+
+_____________________________________________
+
+12. Delivery Failed
+-------------------
+
+BEGIN;
+
+INSERT INTO Orders
+VALUES
+(108,'Deepa','Burger',220,'Placed');
+
+UPDATE Coupons
+SET status='USED'
+WHERE coupon_id=4;
+
+ROLLBACK;
+
+SELECT * FROM Orders;
+
+SELECT * FROM Coupons;
+
+//Everything is cancelled.
+
+____________________________________________
+
+13. Partial Rollback
+--------------------
+
+BEGIN;
+
+INSERT INTO Orders
+VALUES
+(109,'Kavya','Pizza',450,'Placed');
+
+SAVEPOINT s1;
+
+UPDATE Orders
+SET status='Preparing'
+WHERE order_id=109;
+
+SAVEPOINT s2;
+
+INSERT INTO Delivery
+VALUES
+(3,109,'Manoj','Assigned');
+
+ROLLBACK TO s2;
+
+COMMIT;
+
+SELECT * FROM Orders;
+
+SELECT * FROM Delivery;
+
+Result:
+
+--Order exists.
+--Status = Preparing.
+--Delivery record is removed.
+
+____________________________________________
+
+14. Delete Delivery and Restore
+-------------------------------
+
+BEGIN;
+
+SAVEPOINT s1;
+
+DELETE FROM Delivery
+WHERE delivery_id=1;
+
+SELECT * FROM Delivery;
+
+
+ROLLBACK TO s1;
+
+COMMIT;
+
+SELECT * FROM Delivery;
+_____________________________________________
+
+15. SET TRANSACTION (READ ONLY)
+------------------------------
+
+BEGIN;
+
+SET TRANSACTION READ ONLY;
+
+INSERT INTO Orders
+VALUES (111,'Test','Pizza',300,'Placed');
+--SELECT * FROM Orders;
+--Result:
+
+--You can only view data.
+--No INSERT, UPDATE, or DELETE is allowed.
+_____________________________________________
+
+
+16. SET TRANSACTION (READ WRITE)
+--------------------------------
+
+BEGIN;
+
+SET TRANSACTION READ WRITE;
+
+INSERT INTO Orders
+VALUES
+(110,'John','Pizza',400,'Placed');
+
+COMMIT;
+
+SELECT * FROM Orders;
+
+--Result:
+
+--Order 110 is inserted successfully.

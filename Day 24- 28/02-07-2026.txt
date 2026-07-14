@@ -1,0 +1,48 @@
+						DBMS - INTRODUCTION
+DATA TYPES:
+create table mydatatypes (
+id INT PRIMARY KEY,
+name VARCHAR(20),
+dob DATE,
+initial char(2),
+salary decimal(10,3),
+yrofjoin char(4),
+isanemployee boolean,
+intime time,
+outtime time,
+gender gender_choices,
+address text,
+reg_time timestamp
+
+);
+CREATE TYPE gender_choices AS ENUM ('Male', 'Female', 'Prefer not to say', 'Other');
+
+INSERTING VALUES:
+
+INSERT INTO mydatatypes values (
+    101,
+    'Pranathi',
+    '2008-02-29',
+    'PK',
+    1750000.450,
+    '2026',
+    TRUE,
+    '09:00:00',
+    '18:00:00',
+    'Female',
+    'Tiruppur, India'
+);
+INSERT INTO mydatatypes values (
+    102,
+    'Reena Evelin',
+    '2006-08-08',
+    'J',
+    1750000.450,
+    '2026',
+    TRUE,
+    '09:00:00',
+    '18:00:00',
+    'Female',
+    'Coimbatore, India',
+    NOW()
+);

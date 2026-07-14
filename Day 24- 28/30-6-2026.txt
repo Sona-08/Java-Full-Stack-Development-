@@ -1,0 +1,161 @@
+30-6-2026
+
+						STRUCTURAL PATTERNS
+
+
+ADAPTER PATTERN:
+interface Charger {
+    void charge();
+}
+class USPlug {
+    public void supplyPower() {
+        System.out.println("Power from US plug (110V)");
+    }
+}
+class Adapter implements Charger {
+    private USPlug usplug;
+    public Adapter(USPlug usplug) {
+        this.usplug = usplug;
+    }
+
+    @Override
+    public void charge() {
+        usplug.supplyPower();
+    }
+}
+public class Main {
+    public static void main(String[] args) {
+        USPlug usplug = new USPlug();
+        Adapter charger = new Adapter(usplug);
+        charger.charge();
+	}
+} 
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+DECORATOR PATTERN
+class Coffee {
+    public String getDescription() {
+        return "Plain Coffee";
+    }
+}
+
+// Hard-coded subclasses for every variation
+class CoffeeWithMilk extends Coffee {
+    @Override
+    public String getDescription() {
+        return "Plain Coffee + Milk";
+    }
+}
+
+class CoffeeWithCaramel extends Coffee {
+    @Override
+    public String getDescription() {
+        return "Plain Coffee + Caramel";
+    }
+}
+
+// Client
+public class Main {
+    public static void main(String[] args) {
+        Coffee c1 = new CoffeeWithMilk();
+        System.out.println(c1.getDescription()); // Plain Coffee + Milk
+
+        Coffee c2 = new CoffeeWithCaramel();
+        System.out.println(c2.getDescription()); // Plain Coffee + Caramel
+    }
+}
+
+
+GOOD CODE:
+interface Coffee {
+    String getDescription();
+}
+// CONCRETE CLASS
+class PlainCoffee implements Coffee {
+    public String getDescription() {
+        return "Plain Coffee";
+    }
+}
+//BASE DECORATOR CLASS
+abstract class CoffeeDecorator implements Coffee {
+    protected Coffee coffee;
+    public CoffeeDecorator(Coffee coffee) {
+        this.coffee = coffee;
+    }
+    public String getDescription() {
+        return coffee.getDescription();
+    }
+}
+//CONCRETE DECORATOR CLASS
+class MilkDecorator extends CoffeeDecorator {
+    public MilkDecorator(Coffee coffee) {
+        super(coffee);
+    }
+    public String getDescription() {
+        return super.getDescription() + " + Milk";
+    }
+}
+
+class CaramelDecorator extends CoffeeDecorator {
+    public CaramelDecorator(Coffee coffee) {
+        super(coffee);
+    }
+    public String getDescription() {
+        return super.getDescription() + " + Caramel";
+    }
+}
+public class Main {
+    public static void main(String[] args) {
+        Coffee c1 = new MilkDecorator(new PlainCoffee());
+        System.out.println(c1.getDescription());
+
+        Coffee c2 = new CaramelDecorator(new MilkDecorator(new PlainCoffee()));
+        System.out.println(c2.getDescription());
+    }
+}
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+COMPOSITE PATTERN:
+interface MenuComponent {
+    void show();
+}
+
+// Leaf: MenuItem
+class MenuItem implements MenuComponent {
+    private String name;
+    public MenuItem(String name) { this.name = name; }
+    public void show() { System.out.println("Item: " + name); }
+}
+
+// Composite: Menu
+class Menu implements MenuComponent {
+    private String name;
+    private List<MenuComponent> children = new ArrayList<>();
+    public Menu(String name) { this.name = name; }
+    public void add(MenuComponent component) { children.add(component); }
+    public void show() {
+        System.out.println("Menu: " + name);
+        for (MenuComponent c : children) {
+            c.show();
+        }
+    }
+}
+
+// Client
+public class Main {
+    public static void main(String[] args) {
+        MenuItem burger = new MenuItem("Burger");
+        MenuItem fries = new MenuItem("Fries");
+        MenuItem coffee = new MenuItem("Coffee");
+        MenuItem tea = new MenuItem("Tea");
+
+        Menu drinks = new Menu("Drinks");
+        drinks.add(coffee);
+        drinks.add(tea);
+
+        Menu fastFood = new Menu("Fast Food");
+        fastFood.add(burger);
+        fastFood.add(fries);
+        fastFood.add(drinks); // nested menu
+
+        fastFood.show();
+    }
+}
